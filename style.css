@@ -6,7 +6,7 @@ body{
 }
 
 .container{
-    max-width: 380px;
+    max-width: 350px;
 }
 input[type=text]
 input[type=text]:focus{
