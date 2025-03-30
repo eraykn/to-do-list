@@ -36,28 +36,39 @@ function createTodoElement(taskText) {
     editButton.onclick = function(e) {
         e.stopPropagation();
         const span = li.querySelector('span');
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = span.textContent;
-        input.className = 'px-2 py-1 border rounded w-full';
         
-        input.onkeyup = function(e) {
-            if (e.key === 'Enter') {
-                span.textContent = input.value;
-                input.replaceWith(span);
-            }
-            if (e.key === 'Escape') {
-                input.replaceWith(span);
-            }
-        };
-        
-        input.onblur = function() {
-            span.textContent = input.value;
-            input.replaceWith(span);
-        };
-        
-        span.replaceWith(input);
-        input.focus();
+        // Loading spinner ekle
+        const loadingSpinner = `<svg class="loading-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>`;
+        editButton.innerHTML = loadingSpinner;
+
+        setTimeout(() => {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = span.textContent;
+            input.className = 'px-2 py-1 border rounded w-full';
+            
+            input.onkeyup = function(e) {
+                if (e.key === 'Enter') {
+                    editButton.innerHTML = loadingSpinner;
+                    setTimeout(() => {
+                        span.textContent = input.value;
+                        input.replaceWith(span);
+                        editButton.innerHTML = "✎";
+                    }, 500);
+                }
+                if (e.key === 'Escape') {
+                    input.replaceWith(span);
+                    editButton.innerHTML = "✎";
+                }
+            };
+            
+            span.replaceWith(input);
+            input.focus();
+            editButton.innerHTML = "✎";
+        }, 500);
     };
 
     const deleteButton = document.createElement("button");
@@ -65,10 +76,20 @@ function createTodoElement(taskText) {
     deleteButton.innerHTML = "×";
     deleteButton.onclick = function(e) {
         e.stopPropagation();
-        li.classList.add('opacity-0', 'translate-y-3');
+        
+        // Loading spinner ekle
+        const loadingSpinner = `<svg class="loading-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>`;
+        deleteButton.innerHTML = loadingSpinner;
+
         setTimeout(() => {
-            li.remove();
-        }, 300);
+            li.classList.add('opacity-0', 'translate-y-3');
+            setTimeout(() => {
+                li.remove();
+            }, 300);
+        }, 500);
     };
 
     buttonContainer.appendChild(editButton);
